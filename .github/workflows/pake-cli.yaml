@@ -140,7 +140,15 @@ jobs:
             ~/.cargo/git/db/
             node_modules/pake-cli/src-tauri/target/
           key: ${{ inputs.platform }}-cargo-${{ hashFiles('node_modules/pake-cli/src-tauri/Cargo.lock') }}
-
+      - name: Select Xcode Version
+        if: inputs.platform == 'macos-latest'
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "16"
+      - name: Set SDKROOT for MacOS
+        if: inputs.platform == 'macos-latest'
+        run: |
+          echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> $GITHUB_ENV
       - name: Build with pake-cli
         timeout-minutes: 15
         run: |
